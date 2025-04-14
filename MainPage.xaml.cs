@@ -4,11 +4,13 @@
     {
         private double hunger = 1.0;
         private double fun = 1.0;
+        private double cleanliness = 1.0;
         private readonly double decreaseRate = 0.1;
         private readonly double increaseAmount = 0.2;
         private IDispatcherTimer timer;
         private const string HungerKey = "creature_hunger";
         private const string FunKey = "creature_fun";
+        private const string CleanKey = "creature_clean";
 
         public MainPage()
         {
@@ -21,6 +23,7 @@
         {
             hunger = Preferences.Default.Get(HungerKey, 1.0);
             fun = Preferences.Default.Get(FunKey, 1.0);
+            cleanliness = Preferences.Default.Get(CleanKey, 1.0);
             UpdateUI();
         }
 
@@ -28,6 +31,7 @@
         {
             Preferences.Default.Set(HungerKey, hunger);
             Preferences.Default.Set(FunKey, fun);
+            Preferences.Default.Set(CleanKey, cleanliness);
         }
 
         private void StartDecreaseTimers()
@@ -49,6 +53,7 @@
         {
             hunger = Math.Max(0, hunger - decreaseRate);
             fun = Math.Max(0, fun - decreaseRate);
+            cleanliness = Math.Max(0, cleanliness - decreaseRate);
             UpdateUI();
             SaveGameState();
         }
@@ -57,6 +62,7 @@
         {
             HungerBar.Progress = hunger;
             FunBar.Progress = fun;
+            CleanBar.Progress = cleanliness;
         }
 
         private void OnFeedClicked(object sender, EventArgs e)
@@ -69,6 +75,13 @@
         private void OnPlayClicked(object sender, EventArgs e)
         {
             fun = Math.Min(1.0, fun + increaseAmount);
+            UpdateUI();
+            SaveGameState();
+        }
+
+        private void OnCleanClicked(object sender, EventArgs e)
+        {
+            cleanliness = Math.Min(1.0, cleanliness + increaseAmount);
             UpdateUI();
             SaveGameState();
         }
